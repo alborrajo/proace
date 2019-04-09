@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+
+from ruamel import yaml
+import sys
+import os.path
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
+from proace_gui.Proace import Proace
+from proace_gui.Dialog import Dialog
+
+# Function to be used when the program fails and has to close
+def error_and_quit(title, message):
+    # Define quitting function to pass as callback
+    def quit():
+        Gtk.main_quit()
+
+    # Build dialog (passing quit() callback for when the user closes the dialog)
+    dialog = Dialog(builder, title, message, quit)
+    Gtk.main()
+    
+
+
+# Instance GTK Builder
+builder = Gtk.Builder()
+
+# Load config file from arguments
+try:
+    configFilePath = sys.argv[1]
+# If it wasn't supplied in the arguments
+except IndexError:
+    if os.path.exists("./proace.yaml"): # Check first default path
+        configFilePath = "./proace.yaml"
+    elif os.path.exists("/etc/proace.yaml"): # If the file doesn't exists, check second default path
+        configFilePath = "/etc/proace.yaml"
+    else: # If neither exist, error and quit
+        error_and_quit(
+            "Error",
+            "No configuration file could be found"
+            +"\nPlease supply a path to one as an argument"
+            +"\nor add one to /etc/proace.yaml or ./proace.yaml")
+
+
+try:
+    # Read and parse config file from configFilePath
+    config = yaml.safe_load(open(configFilePath,"r").read())
+
+    # Build GUI
+    main = Proace(builder, config, configFilePath)
+    Gtk.main()
+except PermissionError:
+    error_and_quit(
+        "Error",
+        "Error while loading configuration file"
+        +"\nMake sure you have the right permissions to read the file"
+        )
