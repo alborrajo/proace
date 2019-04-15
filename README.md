@@ -2,9 +2,19 @@
 
 **pro**cess through interf**ace**
 
-Proace makes it easy to route any programs' traffic through an specific interface.
+Proace is a Linux utility that makes it easy to route any programs' traffic through an specific interface.
 
 This allows you to, for example, have an internet browser connect to the internet normally while a torrent client connects through a VPN.
+
+## Requirements
+
+- python3
+
+- python-gobject
+
+- pyroute2
+
+- ruamel.yaml
 
 ## How to install
 
@@ -12,11 +22,11 @@ This allows you to, for example, have an internet browser connect to the interne
 
 2. Add a new user group to the system.
 
-```groupadd proace```
+    ```groupadd proace```
 
 3. Add the new group as a secondary group to any users thay may want to use proace
 
-```usermod -G proace YOURUSER```
+    ```usermod -G proace YOURUSER```
 
 4. Done!
 

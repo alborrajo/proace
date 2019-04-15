@@ -1,7 +1,4 @@
-from pprint import pprint
 from ruamel import yaml
-
-from pyroute2 import IPDB
 
 import subprocess
 
