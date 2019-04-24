@@ -26,7 +26,7 @@ This allows you to, for example, have an internet browser connect to the interne
 
 3. Add the new group as a secondary group to any users thay may want to use proace
 
-    ```usermod -G proace YOURUSER```
+    ```usermod -a -G proace YOURUSER```
 
 4. Done!
 

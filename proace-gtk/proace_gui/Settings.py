@@ -3,6 +3,8 @@ from ruamel import yaml
 from pyroute2 import IPDB
 
 import subprocess
+import sys
+import os.path
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -37,7 +39,7 @@ class Settings:
 
         except PermissionError:
             # Run proace_sudo/writetofile.py as root to write the data into the file
-            if self.gksudo(["python", "proace_sudo/writetofile.py", self.configFilePath, yaml.dump(data)], "Save settings").returncode == 0: # If it was successful
+            if self.pkexec([sys.executable, os.path.abspath("proace_sudo/writetofile.py"), self.configFilePath, yaml.dump(data)]).returncode == 0: # If it was successful
                 Dialog(self.builder,"Restart required", "Restart the service in order to apply changes")
             else: # If it wasn't successful
                 Dialog(self.builder,"Error", "Error while writing to file")
@@ -50,11 +52,8 @@ class Settings:
     
     # Asks for root permissions and runs command
     #   Returns a CompletedProcess object, containing, among other things, the return code
-    def gksudo(self, command, description=None):
-        if description == None:
-            return subprocess.run(['gksudo'] + command)
-        else:
-            return subprocess.run(['gksudo', '-D', description] + command)
+    def pkexec(self, command):
+        return subprocess.run(['pkexec'] + command)
 
     # Build interfaces dropdown menu
     #   Checks the system interfaces and the configuration file

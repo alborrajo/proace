@@ -1,6 +1,7 @@
 from ruamel import yaml
 
 import subprocess
+import os.path
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -23,7 +24,7 @@ class Proace:
     #   This action requires root privileges
     def on_service_start(self, object, data=None):
         # Run proace_sudo/start.py as root to setup the rules and routes
-        if self.gksudo(["./proace_sudo/start.sh", self.config.get("interface"), str(self.config.get("rt_table")), str(self.config.get("fwmark")), self.config.get("group")], "Set up rules and routes").returncode == 0: # If it was successful
+        if self.pkexec([os.path.abspath("./proace_sudo/start.sh"), self.config.get("interface"), str(self.config.get("rt_table")), str(self.config.get("fwmark")), self.config.get("group")]).returncode == 0: # If it was successful
             self.reload_config() # Reload config to keep up with any changes
         else: # If it wasn't successful
             Dialog(self.builder,"Error", "Error while setting up rules and routes")
@@ -32,7 +33,7 @@ class Proace:
     #   This action requires root privileges
     def on_service_stop(self, object, data=None):
         # Run proace_sudo/stop.py as root to undo the setup
-        if self.gksudo(["./proace_sudo/stop.sh", self.config.get("interface"), str(self.config.get("rt_table")), str(self.config.get("fwmark")), self.config.get("group")], "Undo rules and routes").returncode == 0: # If it was successful
+        if self.pkexec([os.path.abspath("./proace_sudo/stop.sh"), self.config.get("interface"), str(self.config.get("rt_table")), str(self.config.get("fwmark")), self.config.get("group")]).returncode == 0: # If it was successful
             self.reload_config() # Reload config to keep up with any changes
         else: # If it wasn't successful
             Dialog(self.builder,"Error", "Error while removing rules and routes")
@@ -65,11 +66,8 @@ class Proace:
 
     # Asks for root permissions and runs command
     #   Returns a CompletedProcess object, containing, among other things, the return code
-    def gksudo(self, command, description=None):
-        if description == None:
-            return subprocess.run(['gksudo'] + command)
-        else:
-            return subprocess.run(['gksudo', '-D', description] + command)
+    def pkexec(self, command):
+        return subprocess.run(['pkexec'] + command)
 
 
     # Run applications through the proace group
