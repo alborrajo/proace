@@ -1,8 +1,7 @@
 #!/bin/bash
-if [ $# -ne 4 ]; then
-    echo Usage: $0 interface rt_table fwmark group
-    exit 1
-fi
+# Unofficial bash strict mode
+set -euo pipefail
+IFS=$'\n\t'
 
 INTERFACE=$1
 RT_TABLE=$2
