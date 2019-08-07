@@ -2,7 +2,7 @@
 
 from ruamel import yaml
 import sys
-import os.path
+import os
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -22,6 +22,8 @@ def error_and_quit(title, message):
     Gtk.main()
     
 
+# Set working directory as the script's directory
+os.chdir(os.path.dirname(sys.argv[0]))
 
 # Instance GTK Builder
 builder = Gtk.Builder()

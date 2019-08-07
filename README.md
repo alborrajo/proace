@@ -1,5 +1,7 @@
 # proace
 
+![Proace logo](proace-gtk/icon/icon0.png "Proace logo")
+
 **pro**cess through interf**ace**
 
 Proace is a Linux utility that makes it easy to route any programs' traffic through an specific interface.
